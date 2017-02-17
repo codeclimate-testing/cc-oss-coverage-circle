@@ -20,4 +20,12 @@ class Dog
   def bad(baba = baba)
     puts baba
   end
+
+  def untested
+    puts bad "foo"
+  end
+
+  def also_untested
+    puts bad "booboo"
+  end
 end
