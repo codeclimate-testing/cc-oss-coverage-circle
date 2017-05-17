@@ -1,3 +1,14 @@
+machine:
+  environment:
+    CC_TEST_REPORTER_ID: f3fcaff8b4b2eb53440f7a12c0361178c8b16f06e287a2fdc4631bb76a79f726
+dependencies:
+  pre:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - ./cc-test-reporter before-build
 test:
   override:
-    - "bundle exec rspec && CODECLIMATE_REPO_TOKEN=d1d45981e176e0857d4f8f6640a20d07df5b081f439e743769c77712f3a6be75 bundle exec codeclimate-test-reporter"
+    - bundle exec rspec; ./cc-test-reporter after-build --exit-code $?:
+       parallel: true
+       files:
+         - spec/**/*.rb
