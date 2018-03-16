@@ -1,3 +1,21 @@
-test:
+machine:
+  environment:
+    CC_TEST_REPORTER_ID: "f4e6e5f201f13a86e8b13768e49821b426ff0fd4eb41b6723b9e772b97404b06"
+    CODECLIMATE_REPO_TOKEN: "f4e6e5f201f13a86e8b13768e49821b426ff0fd4eb41b6723b9e772b97404b06"
+    CC_TEST_REPORTER_COVERAGE_ENDPOINT: "https://cce-airbnb-unstable-2.codeclimate.net/api/v1/test_reports"
+  pre:
+    - echo "export rvm_install_on_use_flag=0" >> /home/ubuntu/.rvmrc
+
+dependencies:
   override:
-    - "bundle exec rspec && CODECLIMATE_REPO_TOKEN=d1d45981e176e0857d4f8f6640a20d07df5b081f439e743769c77712f3a6be75 bundle exec codeclimate-test-reporter"
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - bundle install --jobs 4
+
+test:
+  pre:
+    - ./cc-test-reporter before-build
+  override:
+    - bundle exec rspec
+  post:
+    - ./cc-test-reporter after-build || echo "skip upload"
